@@ -34,7 +34,7 @@ import org.apache.commons.math3.linear.RealVector;
 
 public class Multi_Goshtasby {
 
-    private String charset = "UTF-8";
+    private final String charset = "UTF-8";
     private final int M = 4;
     private final int N = 2;
 
@@ -45,7 +45,7 @@ public class Multi_Goshtasby {
 //        System.exit(0);
 //    }
 
-    void readCoordFile(String headings, File file, int headerSize) {
+    public boolean run(File file, int headerSize) {
         try {
             Reader in = new InputStreamReader(new FileInputStream(file), charset);
             CSVParser parser = new CSVParser(in, CSVFormat.EXCEL.withDelimiter('\t'));
@@ -61,8 +61,10 @@ public class Multi_Goshtasby {
                 C1[i - headerSize] = new Vector2D(Double.parseDouble(current.get(2)), Double.parseDouble(current.get(3)));
             }
             subGoshtasby(C0, C1, M, N, width, height, new File(file.getParent()));
+            return true;
         } catch (Exception e) {
             System.out.println(e.toString());
+            return false;
         }
     }
 
@@ -73,7 +75,7 @@ public class Multi_Goshtasby {
         double xdiv = ((double) w) / n;
         double ydiv = ((double) h) / m;
         int size = C1.length;
-        File dir = new File(rootdir + "/goshtasby/" + m + "_" + n);
+        File dir = new File(rootdir + "/goshtasby/" + n + "_" + m);
         if (dir.exists()) {
             FileUtils.deleteQuietly(dir);
         }
