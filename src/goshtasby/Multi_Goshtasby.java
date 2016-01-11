@@ -25,7 +25,6 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
-import javax.swing.JFileChooser;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -39,12 +38,12 @@ public class Multi_Goshtasby {
     private final int M = 4;
     private final int N = 2;
 
-    public static void main(String args[]) {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.showOpenDialog(null);
-        (new Multi_Goshtasby()).readCoordFile("C0_X\tC0_Y\tC1_X\tC1_Y\tC0_\u03c3\tC1_\u03c3\tC0_Fit\tC1_Fit", fileChooser.getSelectedFile(), 3);
-        System.exit(0);
-    }
+//    public static void main(String args[]) {
+//        JFileChooser fileChooser = new JFileChooser();
+//        fileChooser.showOpenDialog(null);
+//        (new Multi_Goshtasby()).readCoordFile("C0_X\tC0_Y\tC1_X\tC1_Y\tC0_\u03c3\tC1_\u03c3\tC0_Fit\tC1_Fit", fileChooser.getSelectedFile(), 3);
+//        System.exit(0);
+//    }
 
     void readCoordFile(String headings, File file, int headerSize) {
         try {
@@ -93,10 +92,10 @@ public class Multi_Goshtasby {
         }
         Goshtasby_ g = new Goshtasby_();
         try {
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < m; j++) {
-                    ArrayList<Vector2D> tempC0 = coordArray0[i][j];
-                    ArrayList<Vector2D> tempC1 = coordArray1[i][j];
+            for (int i = 1; i <= n; i++) {
+                for (int j = 1; j <= m; j++) {
+                    ArrayList<Vector2D> tempC0 = coordArray0[i - 1][j - 1];
+                    ArrayList<Vector2D> tempC1 = coordArray1[i - 1][j - 1];
                     RealVector XCoeffs = g.goshtasby(tempC1, tempC0, 0);
                     RealVector YCoeffs = g.goshtasby(tempC1, tempC0, 1);
                     File xFile = new File(dir + "/xcoeffs" + i + "_" + j + ".txt");
@@ -105,10 +104,12 @@ public class Multi_Goshtasby {
                     PrintWriter yStream = new PrintWriter(new FileOutputStream(yFile));
                     File cFile = new File(dir + "/coords" + i + "_" + j + ".txt");
                     PrintWriter cStream = new PrintWriter(new FileOutputStream(cFile));
-                    for (int k = 0; k < tempC0.size(); k++) {
+                    for (int k = 0; k < XCoeffs.getDimension(); k++) {
                         xStream.println(XCoeffs.getEntry(k));
                         yStream.println(YCoeffs.getEntry(k));
-                        cStream.println(tempC0.get(k).getX() + "," + tempC0.get(k).getY());
+                        if (k < tempC0.size()) {
+                            cStream.println(tempC0.get(k).getX() + "," + tempC0.get(k).getY());
+                        }
                     }
                     xStream.close();
                     yStream.close();
