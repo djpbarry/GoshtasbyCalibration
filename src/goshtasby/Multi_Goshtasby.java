@@ -19,6 +19,7 @@ package goshtasby;
 import UtilClasses.GenUtils;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -44,7 +45,6 @@ public class Multi_Goshtasby {
 //        (new Multi_Goshtasby()).readCoordFile("C0_X\tC0_Y\tC1_X\tC1_Y\tC0_\u03c3\tC1_\u03c3\tC0_Fit\tC1_Fit", fileChooser.getSelectedFile(), 3);
 //        System.exit(0);
 //    }
-
     public boolean run(File file, int headerSize) {
         try {
             Reader in = new InputStreamReader(new FileInputStream(file), charset);
@@ -68,8 +68,8 @@ public class Multi_Goshtasby {
         }
     }
 
-    void subGoshtasby(Vector2D[] C0, Vector2D[] C1, int m, int n, double w, double h, File rootdir) {
-
+    void subGoshtasby(Vector2D[] C0, Vector2D[] C1, int m, int n, double w, double h, File rootdir)
+            throws FileNotFoundException {
         ArrayList<Vector2D> coordArray0[][] = new ArrayList[n][m];
         ArrayList<Vector2D> coordArray1[][] = new ArrayList[n][m];
         double xdiv = ((double) w) / n;
@@ -93,11 +93,11 @@ public class Multi_Goshtasby {
             coordArray1[x1][y1].add(C1[i]);
         }
         Goshtasby_ g = new Goshtasby_();
-        try {
-            for (int i = 1; i <= n; i++) {
-                for (int j = 1; j <= m; j++) {
-                    ArrayList<Vector2D> tempC0 = coordArray0[i - 1][j - 1];
-                    ArrayList<Vector2D> tempC1 = coordArray1[i - 1][j - 1];
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                ArrayList<Vector2D> tempC0 = coordArray0[i - 1][j - 1];
+                ArrayList<Vector2D> tempC1 = coordArray1[i - 1][j - 1];
+                if (tempC0 != null) {
                     RealVector XCoeffs = g.goshtasby(tempC1, tempC0, 0);
                     RealVector YCoeffs = g.goshtasby(tempC1, tempC0, 1);
                     File xFile = new File(dir + "/xcoeffs" + i + "_" + j + ".txt");
@@ -118,8 +118,6 @@ public class Multi_Goshtasby {
                     cStream.close();
                 }
             }
-        } catch (Exception e) {
-            System.out.println(e.toString());
         }
     }
 
